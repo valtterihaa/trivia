@@ -23,9 +23,15 @@ header {
   margin: 1em;
 }
 
+header a {
+  text-decoration: none;
+  color: black;
+}
+
 footer {
   margin-top: auto;
   text-align: center;
+  line-height: 2em;
 }
 
 .category-item {
@@ -37,9 +43,46 @@ footer {
   user-select: none;
 }
 
+.category-checkbox {
+  cursor: pointer;
+}
+
 .category-item:hover {
   background-color: var(--neutral-hover-color);
   border-color: var(--neutral-color);
   color: rgb(32, 32, 32);
   cursor: pointer;
+}
+
+.flex-row {
+  display: flex;
+  flex-direction: row;
+}
+
+.space-evenly {
+  justify-content: space-evenly;
+}
+
+.controls {
+  position: sticky;
+  top: 0;
+  background-color: white;
+  padding: 1em;
+}
+
+/* trivia section */
+
+.trivia-snippet {
+  margin: 1em;
+  background-color: blanchedalmond;
+}
+
+.question {
+  background-color: hsl(229, 53%, 79%);
+  padding: 0.5em;
+}
+
+.answer-choice {
+  margin: 0.25em auto;
+  padding: 0.25em;
 }
