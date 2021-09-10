@@ -86,3 +86,32 @@ footer {
   margin: 0.25em auto;
   padding: 0.25em;
 }
+
+/* .submit-container {
+  
+} */
+
+.trivia-submit {
+  text-decoration: none;
+  font-family: unset;
+  font-size: unset;
+  border: none;
+  margin: auto 1em;
+  background-color: green;
+  width: auto;
+  text-align: center;
+  padding: 1em 2em;
+  border-radius: 10px;
+}
+
+.trivia-submit:hover {
+  cursor: pointer;
+}
+
+.not-ready {
+  background-color: hsl(120, 30%, 76%);
+}
+
+.not-ready:hover {
+  cursor: not-allowed;
+}
