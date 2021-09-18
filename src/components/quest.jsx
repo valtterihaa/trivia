@@ -1,8 +1,11 @@
 import axios from "axios"
 import { useState, useEffect, useRef } from "react"
 import { Link } from "react-router-dom"
+import { useSelector, useDispatch } from "react-redux"
+import { answeredRound } from "../redux/actions"
 
 export const Quest = () => {
+    const dispatch = useDispatch()
     const url = 'https://opentdb.com/api.php?amount=5&category=15&type=multiple&encode=url3986'
     const [questionsAndAnswers, setQuestionsAndAnswers] = useState([])
     const [chosenAnswers, setChosenAnswers] = useState([])
@@ -11,15 +14,17 @@ export const Quest = () => {
     const [amountOfCorrects, setAmountOfCorrects] = useState(0)
     const [hasAnswered, setHasAnswered] = useState(false)
     const [results, setResults] = useState('here we go')
+    // hmm, what is going on here...
+    const playedRounds = useSelector(state => state.trivia.roundsPlayed)
 
     useEffect(() => {
         axios.get(url)
             .then(res => setQuestionsAndAnswers(res.data.results))
             .catch(err => console.log(err))
-        // newSetChosenAnswers([])
     },[results])
 
     const showState = () => {
+        console.log(playedRounds)
         checkAnswerAmount()
     }
 
@@ -87,6 +92,7 @@ export const Quest = () => {
         }
         setAmountOfCorrects(correctAmount)
         setHasAnswered(true)
+        dispatch(answeredRound)
         checkAnswers()
     }
 
