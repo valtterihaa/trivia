@@ -1,5 +1,6 @@
 import axios from "axios"
 import { useState, useEffect, useRef } from "react"
+import { Link } from "react-router-dom"
 
 export const Quest = () => {
     const url = 'https://opentdb.com/api.php?amount=5&category=15&type=multiple&encode=url3986'
@@ -15,6 +16,7 @@ export const Quest = () => {
         axios.get(url)
             .then(res => setQuestionsAndAnswers(res.data.results))
             .catch(err => console.log(err))
+        // newSetChosenAnswers([])
     },[results])
 
     const showState = () => {
@@ -136,12 +138,13 @@ export const Quest = () => {
     const goAgain = () => {
         console.log("I wanna play another round mommy")
         setQuestionsAndAnswers([])
-        setChosenAnswers([])
+        newSetChosenAnswers([])
         setAllChosen(false)
         setCorrectAnswers([])
         setAmountOfCorrects(0)
         setHasAnswered(false)
         setResults('here we go')
+        checkAnswers()
     }
     
 
@@ -159,6 +162,7 @@ export const Quest = () => {
         <>
         <div>{results}</div>
         <button onClick={goAgain}>AGAIN</button>
+        <Link to="/">Choose a new category</Link>
         </>
         :
         <>

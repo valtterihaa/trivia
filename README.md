@@ -7,6 +7,7 @@ Features to be added:
 - apply Redux to stuff
 - choose category
 - choose difficulty
-- choose amount of answers
+- choose amount of questions
+- have option to include yes/no questions
 - keep track of answered q's (API has that functionality, check there)
-- do that in front-end also (redux)
+- do that in front-end also (redux)?
