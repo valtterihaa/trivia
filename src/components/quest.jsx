@@ -6,22 +6,21 @@ import { answeredRound } from "../redux/actions"
 
 export const Quest = () => {
     const dispatch = useDispatch()
-    const url = 'https://opentdb.com/api.php?amount=5&category=15&type=multiple&encode=url3986'
+    // const url = 'https://opentdb.com/api.php?amount=5&category=15&type=multiple&encode=url3986'
+    const url = useSelector(state => `https://opentdb.com/api.php?amount=5&category=${state.setup.category}&type=multiple&encode=url3986`)
     const [questionsAndAnswers, setQuestionsAndAnswers] = useState([])
     const [chosenAnswers, setChosenAnswers] = useState([])
     const [allChosen, setAllChosen] = useState(false)
-    const [correctAnswers, setCorrectAnswers] = useState([])
     const [amountOfCorrects, setAmountOfCorrects] = useState(0)
     const [hasAnswered, setHasAnswered] = useState(false)
     const [results, setResults] = useState('here we go')
-    // hmm, what is going on here...
     const playedRounds = useSelector(state => state.trivia.roundsPlayed)
 
     useEffect(() => {
         axios.get(url)
             .then(res => setQuestionsAndAnswers(res.data.results))
             .catch(err => console.log(err))
-    },[results])
+    },[results, url])
 
     const showState = () => {
         console.log(playedRounds)
@@ -36,13 +35,9 @@ export const Quest = () => {
 
     const handleChange = event => {
         if (chosenAnswers.some(element => element.question === event.target.id)){
-            // find object index where question is the same as the one altered
             let index = chosenAnswers.findIndex(x => x.question === event.target.id)
-            // create duplicate array so original is not mutated
             let chosenAnswerDuplicate = [...chosenAnswers]
-            // splice the old answer out and replace with the new answer; element.splice() has that functionality built-in!
             chosenAnswerDuplicate.splice(index,1,{question:event.target.id,answer:event.target.value})
-            // then modify the state to contain the new object array
             newSetChosenAnswers(chosenAnswerDuplicate)
             showState()
             return
@@ -53,9 +48,7 @@ export const Quest = () => {
 
     let qa = [...questionsAndAnswers]
 
-    // arrange questions alphabetically to start with?
-    // so comparing later will be easier
-    // they do be in the same order tho to start with anyway
+    // arrange questions alphabetically to start with
     const showQuestionsAndAnswers = qa.map(q => {
         let answers = [...q.incorrect_answers]
         answers.push(q.correct_answer)
@@ -74,19 +67,12 @@ export const Quest = () => {
         </div>)
     })
 
-    // when answers are submitted, they are arranged alphabetically by question and compared so there's no need to do in depth comparisons
     const submitAnswers = () => {
         let correctAnswersNotState = []
         let givenAnswers = []
         let correctAmount = 0
-        qa.sort().map(q => {
-            correctAnswersNotState.push(decodeURIComponent(q.correct_answer))
-            console.log(decodeURIComponent(q.correct_answer))
-        })
-        chosenAnswers.map(c => {
-            givenAnswers.push(c.answer)
-            console.log(c.answer)
-        })
+        qa.sort().map(q => correctAnswersNotState.push(decodeURIComponent(q.correct_answer)))
+        chosenAnswers.map(c => givenAnswers.push(c.answer))
         for (let i = 0; i < givenAnswers.length; i++){
             if (correctAnswersNotState[i] === givenAnswers[i]) correctAmount++
         }
@@ -94,6 +80,7 @@ export const Quest = () => {
         setHasAnswered(true)
         dispatch(answeredRound)
         checkAnswers()
+        window.scrollTo(0, 0)
     }
 
     const checkAnswerAmount = () => {
@@ -103,14 +90,11 @@ export const Quest = () => {
     
     const checkAnswers = () => {
         const informOfCorrectAnswers = qa.map((q,i) => {
-            // let questions = [...q.question]
             let answers = [...q.incorrect_answers]
             answers.push(q.correct_answer)
             answers.sort()
             console.log("Chosen answers:",chosenAnswers,"actual answers:",decodeURIComponent(q.correct_answer))
             let educateAnswers = answers.map((a) => {
-
-                // dammit. cannot compare bc refnumber.current[i].answer does not exist yet. Had to put it in a function and return result to state
                 if (decodeURIComponent(a) === chosenAnswers[i].answer && chosenAnswers[i].answer === decodeURIComponent(q.correct_answer)) {
                     console.log("This is an answer?",decodeURIComponent(a),chosenAnswers[i])
                     return (<div key={a} className="answer-choice correct">
@@ -133,7 +117,7 @@ export const Quest = () => {
                     <span> {decodeURIComponent(a)}</span>
                 </div>)
             })
-            return (<div className="trivia-answer-check" key={q.question}>
+            return (<div className="trivia-answer-check trivia-snippet" key={q.question}>
                 <div className="question">{decodeURIComponent(q.question)}</div>
                 <div className="answers">{educateAnswers}</div>
             </div>)
@@ -146,7 +130,7 @@ export const Quest = () => {
         setQuestionsAndAnswers([])
         newSetChosenAnswers([])
         setAllChosen(false)
-        setCorrectAnswers([])
+        // setCorrectAnswers([])
         setAmountOfCorrects(0)
         setHasAnswered(false)
         setResults('here we go')
@@ -156,20 +140,19 @@ export const Quest = () => {
 
     return (<>
     <div className="dashboard">
-        Hello this is quest
         <button onClick={showState}>Show state</button>
-        {hasAnswered ? 
-            <span>You answered correctly to {amountOfCorrects} out of 5 questions.</span>
-                :
-            <span>You have answered {refNumber.current.length} questions</span>
-        }
+            {hasAnswered ? <>
+                <div>You answered correctly to {amountOfCorrects} out of 5 questions.</div>
+                <button onClick={goAgain}>PLAY AGAIN</button>
+                <Link to="/">Choose a new category</Link>
+                </>
+                    :
+                <span>You have answered {refNumber.current.length} questions</span>
+            }
     </div>
-        {hasAnswered ? 
-        <>
-        <div>{results}</div>
-        <button onClick={goAgain}>AGAIN</button>
-        <Link to="/">Choose a new category</Link>
-        </>
+        {hasAnswered ? <>
+            <div className="trivia-container">{results}</div>
+            </>
         :
         <>
         <div className="trivia-container">

@@ -63,7 +63,8 @@ footer {
   justify-content: space-evenly;
 }
 
-.controls {
+.controls,
+.dashboard {
   position: sticky;
   top: 0;
   background-color: white;
