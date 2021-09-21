@@ -24,6 +24,8 @@ export const Quest = () => {
 
     const showState = () => {
         console.log(playedRounds)
+        console.log(questionsAndAnswers)
+        console.log(url)
         checkAnswerAmount()
     }
 
@@ -142,12 +144,17 @@ export const Quest = () => {
     <div className="dashboard">
         <button onClick={showState}>Show state</button>
             {hasAnswered ? <>
-                <div>You answered correctly to {amountOfCorrects} out of 5 questions.</div>
-                <button onClick={goAgain}>PLAY AGAIN</button>
-                <Link to="/">Choose a new category</Link>
+                <div>{amountOfCorrects} out of 5 correct.</div>
+                <div className="new-game-options flex-row">
+                    <button onClick={goAgain}>PLAY AGAIN</button>
+                    <Link to="/"><button className="undesirable">New category</button></Link>
+                </div>
+                
                 </>
                     :
+                <>    
                 <span>You have answered {refNumber.current.length} questions</span>
+                </>
             }
     </div>
         {hasAnswered ? <>

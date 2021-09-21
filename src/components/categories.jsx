@@ -3,10 +3,14 @@ import { useState, useEffect } from "react"
 import { useSelector, useDispatch } from "react-redux"
 // import { choseCategory } from "../redux/actions"
 import { Link } from "react-router-dom"
+ 
+
 
 export const Categories = () => {
+
     const dispatch = useDispatch()
     const [categories, setCategories] = useState([])
+    const [chosen, setChosen] = useState(false)
     // const [selectedCategories, setSelectedCategories] = useState([])
     const url = 'https://opentdb.com/api_category.php'
     const chosenValues = useSelector(state => state.setup)
@@ -57,10 +61,17 @@ export const Categories = () => {
     const chooseCategory = id => {
         console.log(id)
         dispatch({type:'triviaSetup/choseCategory', payload:id})
+        setChosen(true)
     }
 
     const renderCategories =
         sortedCategories.map(c => {
+            if (c.id === chosenValues.category) return (
+                <div className="category-item chosen" key={c.id} id={c.id} onClick={() => chooseCategory(c.id)}>
+                {/* <input type="checkbox" value={c.name} className="category-checkbox" onChange={handleSelect} />  */}
+                <span> {c.name}</span>
+            </div>
+            )
             return (<div className="category-item" key={c.id} id={c.id} onClick={() => chooseCategory(c.id)}>
                 {/* <input type="checkbox" value={c.name} className="category-checkbox" onChange={handleSelect} />  */}
                 <span> {c.name}</span>
@@ -72,10 +83,10 @@ export const Categories = () => {
     }
 
     return (<section>
-        <div className="controls flex-row space-evenly">
+        <div className="controls">
             {/* <div>{showSelectedCategoryAmount} categories selected</div> */}
-            <Link to="/quest"> <button>Start game!</button> </Link>
-            <button onClick={seeCategories}>Check</button>
+            <Link to="/quest"><button>Start game!</button></Link>
+            {/* <button onClick={seeCategories}>Check</button> */}
         </div>
         <div className="category-list">
             {renderCategories}
