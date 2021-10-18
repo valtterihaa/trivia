@@ -171,7 +171,7 @@ footer {
   font-size: unset;
   border: none;
   margin: auto 1em;
-  background-color: green;
+  background-color: var(--call-to-action-color);
   width: auto;
   text-align: center;
   padding: 1em 2em;
