@@ -2,7 +2,7 @@ import axios from "axios"
 import { useState, useEffect, useRef } from "react"
 import { Link } from "react-router-dom"
 import { useSelector, useDispatch } from "react-redux"
-import { answeredRound } from "../redux/actions"
+import { emptyCategory } from "../redux/actions"
 
 export const Quest = () => {
     const dispatch = useDispatch()
@@ -14,7 +14,8 @@ export const Quest = () => {
     const [amountOfCorrects, setAmountOfCorrects] = useState(0)
     const [hasAnswered, setHasAnswered] = useState(false)
     const [results, setResults] = useState('here we go')
-    const playedRounds = useSelector(state => state.trivia.roundsPlayed)
+    // const playedRounds = useSelector(state => state.trivia)
+    const playedCategory = useSelector(state => state.setup.category)
 
     useEffect(() => {
         axios.get(url)
@@ -23,9 +24,10 @@ export const Quest = () => {
     },[results, url])
 
     const showState = () => {
-        console.log(playedRounds)
+        // console.log(playedRounds)
         console.log(questionsAndAnswers)
-        console.log(url)
+        console.log(refNumber.current,"chosen stuff")
+        // console.log(url)
         checkAnswerAmount()
     }
 
@@ -48,7 +50,14 @@ export const Quest = () => {
         showState()
     }
 
-    let qa = [...questionsAndAnswers]
+    const qa = [...questionsAndAnswers]
+    qa.sort((a,b) => {
+        let first = a.question.toLowerCase()
+        let second = b.question.toLowerCase()
+        if (first < second) {return -1}
+        if (first > second) {return 1}
+        return 0
+    })
 
     // arrange questions alphabetically to start with
     const showQuestionsAndAnswers = qa.map(q => {
@@ -70,23 +79,39 @@ export const Quest = () => {
     })
 
     const submitAnswers = () => {
+        console.log(chosenAnswers, "sorted answers?")
+
+        let sortedAnswers = chosenAnswers.sort((a,b) => {
+            let qa = a.question.toLowerCase()
+            let qb = b.question.toLowerCase()
+            if (qa < qb) {return -1}
+            if (qa > qb) {return 1}
+            return 0
+        })
+        
+        // console.log(chosenAnswers, "sorted answers?")
         let correctAnswersNotState = []
         let givenAnswers = []
         let correctAmount = 0
-        qa.sort().map(q => correctAnswersNotState.push(decodeURIComponent(q.correct_answer)))
-        chosenAnswers.map(c => givenAnswers.push(c.answer))
+        
+        console.log(sortedAnswers,qa)
+        qa.map(q => correctAnswersNotState.push(decodeURIComponent(q.correct_answer)))
+        sortedAnswers.map(c => givenAnswers.push(c.answer))
         for (let i = 0; i < givenAnswers.length; i++){
             if (correctAnswersNotState[i] === givenAnswers[i]) correctAmount++
         }
         setAmountOfCorrects(correctAmount)
         setHasAnswered(true)
-        dispatch(answeredRound)
         checkAnswers()
+        if (amountOfCorrects === 5) dispatch({type:'trivia/answeredQuestions', payload: {questionsAnswered: 5,questionsCorrectlyAnswered: correctAmount, categoriesPlayed: playedCategory, perfectRounds: 1}})
+        else dispatch({type:'trivia/answeredQuestions', payload: {questionsAnswered: 5,questionsCorrectlyAnswered: correctAmount, categoriesPlayed: playedCategory, perfectRounds: 0}})
+
         window.scrollTo(0, 0)
     }
 
     const checkAnswerAmount = () => {
-        console.log(questionsAndAnswers.length, chosenAnswers.length,"lengths here, qa and chosen")
+        // console.log(questionsAndAnswers.length, chosenAnswers.length,"lengths here, qa and chosen")
+        // console.log(playedRounds)
         if (questionsAndAnswers.length === refNumber.current.length) setAllChosen(true)
     }
     
@@ -95,24 +120,24 @@ export const Quest = () => {
             let answers = [...q.incorrect_answers]
             answers.push(q.correct_answer)
             answers.sort()
-            console.log("Chosen answers:",chosenAnswers,"actual answers:",decodeURIComponent(q.correct_answer))
+            // console.log("Chosen answers:",chosenAnswers,"actual answers:",decodeURIComponent(q.correct_answer))
             let educateAnswers = answers.map((a) => {
                 if (decodeURIComponent(a) === chosenAnswers[i].answer && chosenAnswers[i].answer === decodeURIComponent(q.correct_answer)) {
-                    console.log("This is an answer?",decodeURIComponent(a),chosenAnswers[i])
+                    // console.log("This is an answer?",decodeURIComponent(a),chosenAnswers[i])
                     return (<div key={a} className="answer-choice correct">
-                        <span> {decodeURIComponent(a)} CORRECT!</span>
+                        <span> {decodeURIComponent(a)}</span>
                     </div>)
                 }
                 if (decodeURIComponent(a) === chosenAnswers[i].answer && chosenAnswers[i].answer !== decodeURIComponent(q.correct_answer)) {
-                    console.log("This is an answer?",decodeURIComponent(a),chosenAnswers[i])
+                    // console.log("This is an answer?",decodeURIComponent(a),chosenAnswers[i])
                     return (<div key={a} className="answer-choice incorrect">
-                        <span> {decodeURIComponent(a)} WRONGO!</span>
+                        <span> {decodeURIComponent(a)}</span>
                     </div>)
                 }
                 if (decodeURIComponent(a) === decodeURIComponent(q.correct_answer) && chosenAnswers[i].answer !== decodeURIComponent(q.correct_answer)) {
-                    console.log("This is an answer?",decodeURIComponent(a),chosenAnswers[i])
+                    // console.log("This is an answer?",decodeURIComponent(a),chosenAnswers[i])
                     return (<div key={a} className="answer-choice actually">
-                        <span> {decodeURIComponent(a)} ACHKCHUALLY</span>
+                        <span> {decodeURIComponent(a)}</span>
                     </div>)
                 }
                 return (<div key={a} className="answer-choice">
@@ -128,7 +153,7 @@ export const Quest = () => {
     }
     
     const goAgain = () => {
-        console.log("I wanna play another round mommy")
+        // console.log("I wanna play another round mommy")
         setQuestionsAndAnswers([])
         newSetChosenAnswers([])
         setAllChosen(false)
@@ -138,22 +163,26 @@ export const Quest = () => {
         setResults('here we go')
         checkAnswers()
     }
+
+    const resetCategory = () => {
+        dispatch(emptyCategory)
+    }
     
 
     return (<>
     <div className="dashboard">
-        <button onClick={showState}>Show state</button>
+        {/* <button onClick={showState}>Show state</button> */}
             {hasAnswered ? <>
                 <div>{amountOfCorrects} out of 5 correct.</div>
                 <div className="new-game-options flex-row">
                     <button onClick={goAgain}>PLAY AGAIN</button>
-                    <Link to="/"><button className="undesirable">New category</button></Link>
+                    <Link to="/"><button className="undesirable" onClick={resetCategory}>New category</button></Link>
                 </div>
                 
                 </>
                     :
                 <>    
-                <span>You have answered {refNumber.current.length} questions</span>
+                <span className="question-amount">You have answered {refNumber.current.length} questions</span>
                 </>
             }
     </div>

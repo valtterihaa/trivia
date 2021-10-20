@@ -10,7 +10,7 @@ export const Categories = () => {
 
     const dispatch = useDispatch()
     const [categories, setCategories] = useState([])
-    const [chosen, setChosen] = useState(false)
+    // const [chosen, setChosen] = useState(false)
     // const [selectedCategories, setSelectedCategories] = useState([])
     const url = 'https://opentdb.com/api_category.php'
     const chosenValues = useSelector(state => state.setup)
@@ -59,9 +59,9 @@ export const Categories = () => {
     // let showSelectedCategoryAmount = selectedCategories.length
 
     const chooseCategory = id => {
-        console.log(id)
+        // console.log(id)
         dispatch({type:'triviaSetup/choseCategory', payload:id})
-        setChosen(true)
+        // setChosen(true)
     }
 
     const renderCategories =
@@ -78,9 +78,9 @@ export const Categories = () => {
             </div>)
         })
     
-    const seeCategories = () => {
-        console.log(chosenValues)
-    }
+    // const seeCategories = () => {
+    //     console.log(chosenValues)
+    // }
 
     return (<section>
         <div className="controls">

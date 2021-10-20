@@ -14,10 +14,10 @@
   --neutral-hover-color: hsl(218, 72%, 83%);
   --chosen-option-color: hsl(288, 84%, 71%);
   --chosen-hover-color: hsl(288, 64%, 71%);
-  --picked-option-color: hsl(61, 79%, 72%);
+  --picked-option-color: hsl(83, 71%, 70%);
   --correct-color: hsl(140, 56%, 38%);
   --call-to-action-color: hsl(140, 66%, 57%);
-  --false-color: hsl(0, 76%, 48%);
+  --false-color: hsl(0, 59%, 59%);
   --background: hsl(210,51%,89%);
 }
 
@@ -37,8 +37,9 @@ button {
   border-radius: 9px;
   padding: 1em;
   width: 100%;
-  font-size: 90%;
+  font-size: 100%;
   box-shadow: 0 0 9px black;
+  color: black;
 }
 
 button:hover {
@@ -51,6 +52,9 @@ button:hover {
 
 .root {
   min-height: 100vh;
+  max-width: 600px;
+  text-align: center;
+  margin: auto;
   display: flex;
   flex-direction: column;
   background-color: var(--background);
@@ -58,7 +62,8 @@ button:hover {
 
 header {
   text-align: center;
-  margin: 1em 1em 0em 1em;
+  margin: 1em;
+  position: relative;
 }
 
 header a {
@@ -108,6 +113,40 @@ footer {
   background-color: var(--background);
   padding: 1em;
   /* box-shadow: 0 10px 9px black; */
+}
+
+.dropdown {
+  position: absolute;
+  padding: 1em;
+  /* width: 70vw; */
+  background-color: white;
+  border: 1px solid red;
+  border-radius: 9px;
+  z-index: 2;
+  top: 100px;
+  left: 0;
+  opacity: 1;
+  /* animation-name: get-in;
+  animation-duration: 800ms;
+  animation-timing-function: ease-in-out; */
+  animation: get-in 400ms ease-in-out forwards;
+  will-change: top;
+  will-change: opacity;
+}
+
+/* .question-amount {
+  background-color: var(--background);
+} */
+
+@keyframes get-in {
+  0% {
+    top: 0px;
+    opacity: 0;
+  }
+  100% {
+    top: 100px;
+    opacity: 1;
+  }
 }
 
 .new-game-options {

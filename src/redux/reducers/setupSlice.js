@@ -8,10 +8,16 @@ const initialState = {
 export default function setupReducer(state = initialState, action) {
     switch (action.type){
         case 'triviaSetup/choseCategory': {
-            console.log("does this even work here",action.payload)
+            // console.log("does this even work here",action.payload)
             return {
                 ...state,
                 category: action.payload
+            }
+        }
+        case 'triviaSetup/emptyCategory': {
+            return {
+                ...state,
+                category: 0
             }
         }
         case 'triviaSetup/toggledBoolean': {
