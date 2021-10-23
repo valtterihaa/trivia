@@ -3,10 +3,12 @@ import { useState, useEffect } from "react"
 import { useSelector, useDispatch } from "react-redux"
 // import { choseCategory } from "../redux/actions"
 import { Link } from "react-router-dom"
- 
+import { Stats } from "./stats"
+
 
 
 export const Categories = () => {
+
 
     const dispatch = useDispatch()
     const [categories, setCategories] = useState([])
@@ -83,9 +85,15 @@ export const Categories = () => {
     // }
 
     return (<section>
-        <div className="controls">
-            {/* <div>{showSelectedCategoryAmount} categories selected</div> */}
-            <Link to="/quest"><button>Start game!</button></Link>
+        <div className="controls flex-row">
+            <div className="control-item">
+                <Stats />
+            </div>
+            
+            <div className="control-item">
+                <Link to="/quest"><button className="start-game">Start game!</button></Link>
+            </div>
+            
             {/* <button onClick={seeCategories}>Check</button> */}
         </div>
         <div className="category-list">

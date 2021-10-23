@@ -1,16 +1,16 @@
 import { useState } from "react"
 import { Link } from "react-router-dom"
-import { Stats } from "./stats"
+// import { Stats } from "./stats"
 
 export const Header = () => {
-    const [stat, setStat] = useState(false)
+    // const [stat, setStat] = useState(false)
     return (<header>
         <Link to="/">
-            <h1>Valtteri's Trivia App</h1>
+            <h1>V's Trivia App</h1>
         </Link>
-        <button onClick={() => setStat(!stat)}>Stats</button>
+        {/* <button onClick={() => setStat(!stat)}>Stats</button>
         <div className="test">
             {stat ? <Stats /> : <></>}
-        </div>
+        </div> */}
     </header>)
 }

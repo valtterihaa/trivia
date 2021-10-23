@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from "react"
 import { Link } from "react-router-dom"
 import { useSelector, useDispatch } from "react-redux"
 import { emptyCategory } from "../redux/actions"
+import { Stats } from "./stats"
 
 export const Quest = () => {
     const dispatch = useDispatch()
@@ -173,12 +174,13 @@ export const Quest = () => {
     <div className="dashboard">
         {/* <button onClick={showState}>Show state</button> */}
             {hasAnswered ? <>
-                <div>{amountOfCorrects} out of 5 correct.</div>
+                
                 <div className="new-game-options flex-row">
+                    <Stats />
                     <button onClick={goAgain}>PLAY AGAIN</button>
                     <Link to="/"><button className="undesirable" onClick={resetCategory}>New category</button></Link>
                 </div>
-                
+                <div className="round-stats">{amountOfCorrects} out of 5 correct.</div>
                 </>
                     :
                 <>    
@@ -198,7 +200,7 @@ export const Quest = () => {
             {allChosen ? 
                 <button onClick={submitAnswers} className="trivia-submit">Submit answers</button>
                     : 
-                <>Answer all q's first</>
+                <>Answer all questions</>
             }
         </div>
         </>}
